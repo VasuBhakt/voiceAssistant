@@ -3,8 +3,8 @@ import 'package:voice_assistant/colors/pallete.dart';
 
 class ChatBubble extends StatelessWidget {
   final String message;
-  final bool user;
-  const ChatBubble({super.key, required this.message, required this.user});
+  final String role;
+  const ChatBubble({super.key, required this.message, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -13,16 +13,16 @@ class ChatBubble extends StatelessWidget {
       margin: const EdgeInsets.only(top: 25),
       decoration: BoxDecoration(
         border: Border.all(color: Pallete.borderColor),
-        borderRadius: (user)
+        borderRadius: (role == "user")
             ? BorderRadius.all(
                 Radius.circular(20),
               ).copyWith(topRight: Radius.circular(0))
             : BorderRadius.all(
                 Radius.circular(20),
               ).copyWith(topLeft: Radius.circular(0)),
-        color: (user) ? Pallete.secondSuggestionBoxColor : Pallete.firstSuggestionBoxColor
+        color: (role == "user") ? Pallete.secondSuggestionBoxColor : Pallete.firstSuggestionBoxColor
       ),
-      alignment: (user) ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: (role == "user") ? Alignment.centerRight : Alignment.centerLeft,
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 10.0),
         child: Text(

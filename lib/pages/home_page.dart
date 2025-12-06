@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/colors/pallete.dart';
+import 'package:voice_assistant/services/gemini_service.dart';
 import 'package:voice_assistant/widgets/chat_bubble.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,13 +17,39 @@ class _HomePageState extends State<HomePage> {
   String speech = '';
   //String textSearch = '';
   List<Map<String, dynamic>> messages = [
-    {"text": "Hello! What can I do for you?", "user": false},
-    {"text": "Here are a few suggestions!", "user": false},
-    {"text": "What's the weather today?", "user": true},
-    {"text": "How to build a startup?", "user": true},
-    {"text": "What was the result of the latest Grand Prix?", "user": true},
+    {
+      "role": "model",
+      "parts": [
+        {"text": "Hello! What can I do to help you?"},
+      ],
+    },
+    {
+      "role": "model",
+      "parts": [
+        {"text": "Here are some suggestions!"},
+      ],
+    },
+    {
+      "role": "user",
+      "parts": [
+        {"text": "What's the weather today?"},
+      ],
+    },
+    {
+      "role": "model",
+      "parts": [
+        {"text": "The weather is sunny!"},
+      ],
+    },
+    {
+      "role": "user",
+      "parts": [
+        {"text": "Tell me about Formula 1?"},
+      ],
+    },
   ];
   bool defMessage = true;
+  bool isReplying = false;
 
   @override
   void initState() {
@@ -45,15 +72,31 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  void onSpeechToTextResult(SpeechRecognitionResult result) {
+  void onSpeechToTextResult(SpeechRecognitionResult result) async {
     setState(() {
       speech = result.recognizedWords;
     });
 
-    // When speech is finalized
-    if (result.finalResult && speech.isNotEmpty) {
-      addUserMessage(result.recognizedWords);
+    if (result.finalResult && speech.isNotEmpty && !isReplying) {
+      // LOCK: block duplicates
+      addUserMessage(speech);
       speech = '';
+
+      setState(() {
+        isReplying = true;
+      });
+
+      final reply = await GeminiService().geminiAPI(messages);
+
+      setState(() {
+        messages.add({
+          "role": "model",
+          "parts": [
+            {"text": reply},
+          ],
+        });
+        isReplying = false;
+      });
     }
   }
 
@@ -69,7 +112,12 @@ class _HomePageState extends State<HomePage> {
         messages.clear(); // remove default messages if FIRST message
         defMessage = false;
       }
-      messages.add({"text": text, "user": true});
+      messages.add({
+        "parts": [
+          {"text": text},
+        ],
+        "role": "user",
+      });
     });
   }
 
@@ -132,13 +180,26 @@ class _HomePageState extends State<HomePage> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return ChatBubble(
-                    message: messages[index]["text"],
-                    user: messages[index]["user"],
+                    message: messages[index]["parts"][0]["text"],
+                    role: messages[index]["role"],
                   );
                 },
               ),
             ),
-
+            if (isReplying)
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(bottom: 5),
+                child: Text(
+                  "Replying...",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
             SizedBox(height: 10),
             /*SafeArea(
               child: Row(
