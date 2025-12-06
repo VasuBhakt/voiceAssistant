@@ -6,7 +6,6 @@ import 'package:voice_assistant/colors/pallete.dart';
 import 'package:voice_assistant/services/gemini_service.dart';
 import 'package:voice_assistant/widgets/chat_bubble.dart';
 
-
 class HomePage extends StatefulWidget {
   final VoidCallback toggleTheme;
   const HomePage({super.key, required this.toggleTheme});
@@ -40,9 +39,9 @@ class _HomePageState extends State<HomePage> {
       ],
     },
     {
-      "role": "model",
+      "role": "user",
       "parts": [
-        {"text": "The weather is sunny!"},
+        {"text": "Tell me about quantum mechanics"},
       ],
     },
     {
@@ -60,6 +59,51 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     initSpeechToText();
     initTextToSpeech();
+  }
+
+  void resetApp() {
+    
+    speechToText.stop();
+    flutterTts.stop();
+
+    setState(() {
+      messages = [
+        {
+          "role": "model",
+          "parts": [
+            {"text": "Hello! What can I do to help you?"},
+          ],
+        },
+        {
+          "role": "model",
+          "parts": [
+            {"text": "Here are some suggestions!"},
+          ],
+        },
+        {
+          "role": "user",
+          "parts": [
+            {"text": "What's the weather today?"},
+          ],
+        },
+        {
+          "role": "user",
+          "parts": [
+            {"text": "Tell me about quantum mechanics"},
+          ],
+        },
+        {
+          "role": "user",
+          "parts": [
+            {"text": "Tell me about Formula 1?"},
+          ],
+        },
+      ];
+
+      defMessage = true; 
+      speech = "";
+      isReplying = false; 
+    });
   }
 
   Future<void> initSpeechToText() async {
@@ -159,11 +203,14 @@ class _HomePageState extends State<HomePage> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: IconButton(onPressed: widget.toggleTheme, icon: Icon(Icons.light_mode)),
+              child: IconButton(
+                onPressed: widget.toggleTheme,
+                icon: Icon(Icons.light_mode),
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: IconButton(onPressed: () {}, icon: Icon(Icons.refresh)),
+              child: IconButton(onPressed: resetApp, icon: Icon(Icons.refresh)),
             ),
           ],
         ),
@@ -204,7 +251,9 @@ class _HomePageState extends State<HomePage> {
                   return ChatBubble(
                     message: messages[index]["parts"][0]["text"],
                     role: messages[index]["role"],
-                    isDarkMode: Theme.of(context).scaffoldBackgroundColor == Colors.black,
+                    isDarkMode:
+                        Theme.of(context).scaffoldBackgroundColor ==
+                        Colors.black,
                   );
                 },
               ),
@@ -219,7 +268,8 @@ class _HomePageState extends State<HomePage> {
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
-                    color: Colors.black,
+                    color: (Theme.of(context).scaffoldBackgroundColor ==
+                        Colors.white) ?  Colors.black : Colors.white,
                   ),
                 ),
               ),
