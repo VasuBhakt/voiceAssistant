@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   SpeechToText speechToText = SpeechToText();
   String speech = '';
+  //String textSearch = '';
   List<Map<String, dynamic>> messages = [
     {"text": "Hello! What can I do for you?", "user": false},
     {"text": "Here are a few suggestions!", "user": false},
@@ -139,29 +140,40 @@ class _HomePageState extends State<HomePage> {
             ),
 
             SizedBox(height: 10),
-            SafeArea(
+            /*SafeArea(
               child: Row(
                 children: [
-                  Expanded(child: TextField()),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-                  FloatingActionButton(
-                    onPressed: () async {
-                      if (await speechToText.hasPermission &&
-                          speechToText.isNotListening) {
-                        await startListening();
-                      } else if (speechToText.isListening) {
-                        await stopListening();
-                      } else {
-                        initSpeechToText();
-                      }
-                    },
-                    backgroundColor: Pallete.firstSuggestionBoxColor,
-                    child: Icon(
-                      (speechToText.isNotListening) ? Icons.mic : Icons.stop,
-                      color: Colors.black,
+                  Expanded(child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Enter your question here!",
+                      
                     ),
-                  ),
+                  )),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+                  
                 ],
+              ),
+            ),*/
+            SafeArea(
+              child: Align(
+                alignment: AlignmentGeometry.bottomRight,
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    if (await speechToText.hasPermission &&
+                        speechToText.isNotListening) {
+                      await startListening();
+                    } else if (speechToText.isListening) {
+                      await stopListening();
+                    } else {
+                      initSpeechToText();
+                    }
+                  },
+                  backgroundColor: Pallete.firstSuggestionBoxColor,
+                  child: Icon(
+                    (speechToText.isNotListening) ? Icons.mic : Icons.stop,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 20),
