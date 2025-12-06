@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
     });
 
     // When speech is finalized
-    if (result.finalResult) {
+    if (result.finalResult && speech.isNotEmpty) {
       addUserMessage(result.recognizedWords);
       speech = '';
     }

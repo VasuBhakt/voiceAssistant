@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>The app requires it duh</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>For using the voice assistant</string>
 </dict>
 </plist>
