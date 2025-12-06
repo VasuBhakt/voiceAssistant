@@ -1,9 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/colors/pallete.dart';
 import 'package:voice_assistant/widgets/chat_bubble.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  SpeechToText speechToText = SpeechToText();
+  String speech = '';
+  List<Map<String, dynamic>> messages = [
+    {"text": "Hello! What can I do for you?", "user": false},
+    {"text": "Here are a few suggestions!", "user": false},
+    {"text": "What's the weather today?", "user": true},
+    {"text": "How to build a startup?", "user": true},
+    {"text": "What was the result of the latest Grand Prix?", "user": true},
+  ];
+  bool defMessage = true;
+
+  @override
+  void initState() {
+    super.initState();
+    initSpeechToText();
+  }
+
+  Future<void> initSpeechToText() async {
+    await speechToText.initialize();
+    setState(() {});
+  }
+
+  Future<void> startListening() async {
+    await speechToText.listen(onResult: onSpeechToTextResult);
+    setState(() {});
+  }
+
+  Future<void> stopListening() async {
+    await speechToText.stop();
+    setState(() {});
+  }
+
+  void onSpeechToTextResult(SpeechRecognitionResult result) {
+    setState(() {
+      speech = result.recognizedWords;
+    });
+
+    // When speech is finalized
+    if (result.finalResult) {
+      addUserMessage(result.recognizedWords);
+      speech = '';
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    speechToText.stop();
+  }
+
+  void addUserMessage(String text) {
+    setState(() {
+      if (defMessage) {
+        messages.clear(); // remove default messages if FIRST message
+        defMessage = false;
+      }
+      messages.add({"text": text, "user": true});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,42 +126,43 @@ class HomePage extends StatelessWidget {
               ],
             ),
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 padding: EdgeInsets.only(top: 10),
-                children: [
-                  ChatBubble(
-                    message: "Hello! What can I do for you?",
-                    user: false,
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                    alignment: Alignment.centerLeft,
-                    child: const Text(
-                      'Here are a few suggestions!',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Pallete.mainFontColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  ChatBubble(message: "What's the weather today?", user: true),
-                  ChatBubble(message: "How to build a startup?", user: true),
-                  ChatBubble(message: "What was the scoreline for Mohun Bagan vs East Bengal", user: true),
-                ],
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  return ChatBubble(
+                    message: messages[index]["text"],
+                    user: messages[index]["user"],
+                  );
+                },
               ),
             ),
+
             SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(child: TextField()),
-                IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-                FloatingActionButton(
-                  onPressed: () {},
-                  backgroundColor: Pallete.firstSuggestionBoxColor,
-                  child: Icon(Icons.mic, color: Colors.black),
-                ),
-              ],
+            SafeArea(
+              child: Row(
+                children: [
+                  Expanded(child: TextField()),
+                  IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+                  FloatingActionButton(
+                    onPressed: () async {
+                      if (await speechToText.hasPermission &&
+                          speechToText.isNotListening) {
+                        await startListening();
+                      } else if (speechToText.isListening) {
+                        await stopListening();
+                      } else {
+                        initSpeechToText();
+                      }
+                    },
+                    backgroundColor: Pallete.firstSuggestionBoxColor,
+                    child: Icon(
+                      (speechToText.isNotListening) ? Icons.mic : Icons.stop,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 20),
           ],
