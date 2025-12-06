@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:voice_assistant/colors/pallete.dart';
 import 'package:voice_assistant/services/gemini_service.dart';
 import 'package:voice_assistant/widgets/chat_bubble.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   SpeechToText speechToText = SpeechToText();
+  FlutterTts flutterTts = FlutterTts();
   String speech = '';
   //String textSearch = '';
   List<Map<String, dynamic>> messages = [
@@ -55,10 +58,16 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     initSpeechToText();
+    initTextToSpeech();
   }
 
   Future<void> initSpeechToText() async {
     await speechToText.initialize();
+    setState(() {});
+  }
+
+  Future<void> initTextToSpeech() async {
+    await flutterTts.setSharedInstance(true);
     setState(() {});
   }
 
@@ -97,13 +106,22 @@ class _HomePageState extends State<HomePage> {
         });
         isReplying = false;
       });
+
+      if (reply.trim().isNotEmpty) {
+        await systemSpeak(reply);
+      }
     }
+  }
+
+  Future<void> systemSpeak(String content) async {
+    await flutterTts.speak(content);
   }
 
   @override
   void dispose() {
-    super.dispose();
     speechToText.stop();
+    flutterTts.stop();
+    super.dispose();
   }
 
   void addUserMessage(String text) {
