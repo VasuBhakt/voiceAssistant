@@ -8,7 +8,8 @@ import 'package:voice_assistant/widgets/chat_bubble.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final VoidCallback toggleTheme;
+  const HomePage({super.key, required this.toggleTheme});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -142,7 +143,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
         scrolledUnderElevation: 0,
         title: Stack(
           alignment: Alignment.center,
@@ -155,11 +159,11 @@ class _HomePageState extends State<HomePage> {
             ),
             Align(
               alignment: Alignment.centerLeft,
-              child: IconButton(onPressed: () {}, icon: Icon(Icons.refresh)),
+              child: IconButton(onPressed: widget.toggleTheme, icon: Icon(Icons.light_mode)),
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: IconButton(onPressed: () {}, icon: Icon(Icons.menu)),
+              child: IconButton(onPressed: () {}, icon: Icon(Icons.refresh)),
             ),
           ],
         ),
@@ -200,6 +204,7 @@ class _HomePageState extends State<HomePage> {
                   return ChatBubble(
                     message: messages[index]["parts"][0]["text"],
                     role: messages[index]["role"],
+                    isDarkMode: Theme.of(context).scaffoldBackgroundColor == Colors.black,
                   );
                 },
               ),
@@ -247,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                       initSpeechToText();
                     }
                   },
-                  backgroundColor: Pallete.firstSuggestionBoxColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                   child: Icon(
                     (speechToText.isNotListening) ? Icons.mic : Icons.stop,
                     color: Colors.black,
