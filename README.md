@@ -8,7 +8,7 @@
 - 💬 Animated, scrollable chat interface.
 - 🌗 Light & Dark mode support.
 - 🔄 Quick reset functionality.
-- 🤖💬🔁 Supports multi-turn, context-aware conversations
+- 🤖 Supports multi-turn, context-aware conversations
 
 ## 🚀 Getting Started
 
