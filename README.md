@@ -67,6 +67,9 @@ Contributions welcome! Open issues or submit pull requests to improve the app. <
 It would be really helpful if someone could do the testing for iOS platform since it couldn't be done due to device constraints. <br>
 If any bugs are found, feel free to open issues or submit pull requests! Thanks in advance! <br>
 
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE.txt).
 
 
 
