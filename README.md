@@ -62,7 +62,8 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 
 ## 🤓 Fun Fact
 
-Such a dull name because I named it in a rush, plan to change it later!
+ - Such a dull name because I named it in a rush, plan to change it later!
+ - This project is for educational purposes, therefore I cannot afford a paid model. Requesting Google for a better API. Please.
 
 
 
