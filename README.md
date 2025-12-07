@@ -50,18 +50,6 @@ flutter pub get
    - Responses are generated via the Gemini 2.5 API Flash, which has memory and context limitations. This might result in inaccurate information, especially for more recent information.
    - Occasionally, the API may fail due to network issues or rate limits — the app handles this with an ```API_ERROR``` fallback.
 
-2. **Voice Recognition (```speech_to_text```)**
-   - Accuracy depends on device microphone quality and ambient noise.
-   - Some devices may not support continuous listening or long recordings.
-   - Limited support for non-English languages unless configured on the device.
-
-3. **Text-to-Speech (```flutter_tts```)**
-   - Voice quality and speed vary by device.
-   - Certain voices or languages may not be available on all platforms.
-
-4. **Platform Differences**
-   - Minor UI differences may appear on small devices or iOS/Android due to system-level font scaling, safe area insets, and TTS/voice recognition behavior.
-
 ## 🤝 Contributing
 
 Contributions welcome! Open issues or submit pull requests to improve the app. <br>
