@@ -60,7 +60,7 @@ If any bugs are found, feel free to open issues or submit pull requests! Thanks 
 
 This project is licensed under the [MIT License](./LICENSE.txt).
 
-## Fun Fact
+## 🎉 Fun Fact
 
 Such a dull name because I named it in a rush, plan to change it later!
 
