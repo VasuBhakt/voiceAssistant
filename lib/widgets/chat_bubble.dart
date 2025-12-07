@@ -35,7 +35,7 @@ class ChatBubble extends StatelessWidget {
             : ((isDarkMode) ? Pallete.darkModeModel : Pallete.lightModeModel),
         boxShadow: [
           BoxShadow(
-            color: (isDarkMode) ? Color.fromRGBO(63, 63, 63, 1) : Color.fromRGBO(0, 18, 101, 1),
+            color: Color.fromRGBO(0, 18, 101, 1),
             blurRadius: 12,
             offset: Offset(0, 6)
           )
