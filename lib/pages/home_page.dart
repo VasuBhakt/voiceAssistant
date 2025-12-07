@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
   bool isReplying = false;
   bool apiError = false;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> {
             {"text": reply},
           ],
         });
-
+        scrollToBottom();
         isReplying = false;
         apiError = false;
       });
@@ -170,6 +171,7 @@ class _HomePageState extends State<HomePage> {
           {"text": text},
         ],
       });
+      scrollToBottom();
     });
   }
 
@@ -190,6 +192,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         duration: Duration(milliseconds: 150),
+      );
+    }
+  }
+
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
       );
     }
   }
@@ -279,6 +291,15 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       color: Pallete.assistantCircleColor,
                       shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: (widget.isDarkMode)
+                              ? Color.fromRGBO(152, 152, 152, 1)
+                              : Color.fromRGBO(0, 18, 101, 1),
+                          blurRadius: 12,
+                          offset: Offset(0, 6),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -293,9 +314,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             Expanded(
               child: AnimatedList(
                 key: _listKey,
+                controller: scrollController,
                 padding: EdgeInsets.only(top: 10),
                 initialItemCount: messages.length,
                 itemBuilder: (context, index, animation) {
