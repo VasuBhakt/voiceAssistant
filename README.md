@@ -1,6 +1,6 @@
 # 🎙️ voiceAssistant
 
-**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5. Ask it about Sports, History, Science, or any topic, and it responds via text and speech!
+**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5 Flash. Ask it about Sports, History, Science, or any topic, and it responds via text and speech!
 
 ## 🌟 Features
 - 🎤 Real-time Speech-to-Text recognition.
@@ -46,7 +46,7 @@ flutter pub get
 ## ⚠️ Limitations
 
 1. **Gemini API**
-   - Responses are generated via the Gemini 2.5 API, which has memory and context limitations. This might result in inaccurate information, especially for more recent information.
+   - Responses are generated via the Gemini 2.5 API Flash, which has memory and context limitations. This might result in inaccurate information, especially for more recent information.
    - Occasionally, the API may fail due to network issues or rate limits — the app handles this with an ```API_ERROR``` fallback.
 
 2. **Voice Recognition (```speech_to_text```)**
