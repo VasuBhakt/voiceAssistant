@@ -1,6 +1,6 @@
 # 🎙️ voiceAssistant
 
-**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5 Flash. Ask it about Sports, History, Science, or any topic, and it responds via text and speech!
+**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5 Flash. Ask it about Sports, History, Science, or any topic, and it responds via text and speech! Supports full multi-turn conversations, preserving context across messages for natural, human-like interactions.
 
 ## 🌟 Features
 - 🎤 Real-time Speech-to-Text recognition.
@@ -8,6 +8,7 @@
 - 💬 Animated, scrollable chat interface.
 - 🌗 Light & Dark mode support.
 - 🔄 Quick reset functionality.
+- 💬🔁 Multi-turn conversation support
 
 ## 🚀 Getting Started
 
