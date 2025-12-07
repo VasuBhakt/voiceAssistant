@@ -8,7 +8,12 @@ import 'package:voice_assistant/widgets/chat_bubble.dart';
 
 class HomePage extends StatefulWidget {
   final VoidCallback toggleTheme;
-  const HomePage({super.key, required this.toggleTheme});
+  final bool isDarkMode;
+  const HomePage({
+    super.key,
+    required this.toggleTheme,
+    required this.isDarkMode,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,9 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   SpeechToText speechToText = SpeechToText();
   FlutterTts flutterTts = FlutterTts();
-  String speech = '';
-  //String textSearch = '';
-  List<Map<String, dynamic>> messages = [
+  List<Map<String, dynamic>> defaultMessages = [
     {
       "role": "model",
       "parts": [
@@ -51,58 +54,35 @@ class _HomePageState extends State<HomePage> {
       ],
     },
   ];
+  //String textSearch = '';
+  List<Map<String, dynamic>> messages = [{}];
+  String speech = '';
   bool defMessage = true;
   bool isReplying = false;
+  bool apiError = false;
 
   @override
   void initState() {
     super.initState();
     initSpeechToText();
     initTextToSpeech();
+    messages = defaultMessages
+        .map((e) => Map<String, dynamic>.from(e))
+        .toList();
   }
 
   void resetApp() {
-    
     speechToText.stop();
     flutterTts.stop();
 
     setState(() {
-      messages = [
-        {
-          "role": "model",
-          "parts": [
-            {"text": "Hello! What can I do to help you?"},
-          ],
-        },
-        {
-          "role": "model",
-          "parts": [
-            {"text": "Here are some suggestions!"},
-          ],
-        },
-        {
-          "role": "user",
-          "parts": [
-            {"text": "What's the weather today?"},
-          ],
-        },
-        {
-          "role": "user",
-          "parts": [
-            {"text": "Tell me about quantum mechanics"},
-          ],
-        },
-        {
-          "role": "user",
-          "parts": [
-            {"text": "Tell me about Formula 1?"},
-          ],
-        },
-      ];
-
-      defMessage = true; 
+      messages = defaultMessages
+          .map((e) => Map<String, dynamic>.from(e))
+          .toList();
+      defMessage = true;
       speech = "";
-      isReplying = false; 
+      isReplying = false;
+      apiError = false;
     });
   }
 
@@ -141,7 +121,14 @@ class _HomePageState extends State<HomePage> {
       });
 
       final reply = await GeminiService().geminiAPI(messages);
-
+      if (reply == "API_ERROR") {
+        setState(() {
+          apiError = true;
+          isReplying = false;
+        });
+        showErrorSnackBar("There seems to be a problem, please try again later.");
+        return;
+      }
       setState(() {
         messages.add({
           "role": "model",
@@ -150,6 +137,7 @@ class _HomePageState extends State<HomePage> {
           ],
         });
         isReplying = false;
+        apiError = false;
       });
 
       if (reply.trim().isNotEmpty) {
@@ -182,6 +170,18 @@ class _HomePageState extends State<HomePage> {
         "role": "user",
       });
     });
+  }
+
+  void showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
@@ -251,9 +251,7 @@ class _HomePageState extends State<HomePage> {
                   return ChatBubble(
                     message: messages[index]["parts"][0]["text"],
                     role: messages[index]["role"],
-                    isDarkMode:
-                        Theme.of(context).scaffoldBackgroundColor ==
-                        Colors.black,
+                    isDarkMode: widget.isDarkMode,
                   );
                 },
               ),
@@ -268,8 +266,7 @@ class _HomePageState extends State<HomePage> {
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
-                    color: (Theme.of(context).scaffoldBackgroundColor ==
-                        Colors.white) ?  Colors.black : Colors.white,
+                    color: (!widget.isDarkMode) ? Colors.black : Colors.white,
                   ),
                 ),
               ),

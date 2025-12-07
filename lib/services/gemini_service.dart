@@ -29,7 +29,7 @@ class GeminiService {
 
       return content;
     } catch (e) {
-      return e.toString();
+      return "API_ERROR";
     }
   }
 }

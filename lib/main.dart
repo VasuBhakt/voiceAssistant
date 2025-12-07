@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       darkTheme: darkTheme,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       title: 'voiceAssistant',
-      home: HomePage(toggleTheme : toggleTheme),
+      home: HomePage(toggleTheme : toggleTheme, isDarkMode : isDarkMode),
     );
   }
 }
