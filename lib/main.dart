@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   final ThemeData lightTheme = ThemeData(
-    fontFamily: 'Roboto',
+    fontFamily: 'Nunito',
     brightness: Brightness.light,
     primaryColor: Colors.blueAccent,
     scaffoldBackgroundColor: Colors.white,
@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
   );
 
   final ThemeData darkTheme = ThemeData(
-    fontFamily: 'Roboto',
+    fontFamily: 'Nunito',
     brightness: Brightness.dark,
     primaryColor: Colors.blue[700],
     scaffoldBackgroundColor: Colors.black,
