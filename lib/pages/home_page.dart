@@ -26,7 +26,10 @@ class _HomePageState extends State<HomePage> {
     {
       "role": "model",
       "parts": [
-        {"text": "Hello! What can I do to help you?"},
+        {
+          "text":
+              "Hi there! I'm voiceAssistant, powered by Gemini 2.5. Curious about Sports, History, or Science? Just ask me, and I’ll help!",
+        },
       ],
     },
     {
@@ -38,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     {
       "role": "user",
       "parts": [
-        {"text": "What's the weather today?"},
+        {"text": "Who was Subhash Chandra Bose?"},
       ],
     },
     {
@@ -50,49 +53,46 @@ class _HomePageState extends State<HomePage> {
     {
       "role": "user",
       "parts": [
-        {"text": "Tell me about Formula 1?"},
+        {"text": "What is Formula 1?"},
       ],
     },
   ];
   //String textSearch = '';
-  List<Map<String, dynamic>> messages = [{}];
+  List<Map<String, dynamic>> messages = [];
   String speech = '';
   bool defMessage = true;
   bool isReplying = false;
   bool apiError = false;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
   @override
   void initState() {
     super.initState();
     initSpeechToText();
     initTextToSpeech();
-    messages = defaultMessages
-        .map((e) => Map<String, dynamic>.from(e))
-        .toList();
+
+    messages = [];
+
+    Future.delayed(Duration(milliseconds: 300), () {
+      addDefaultMessagesAnimated();
+    });
   }
 
-  void resetApp() {
-    speechToText.stop();
-    flutterTts.stop();
+  void addDefaultMessagesAnimated() async {
+    for (int i = 0; i < defaultMessages.length; i++) {
+      await Future.delayed(Duration(milliseconds: 250)); // animation delay
+      messages.insert(i, Map<String, dynamic>.from(defaultMessages[i]));
+      _listKey.currentState?.insertItem(i);
+    }
+  }
 
-    setState(() {
-      messages = defaultMessages
-          .map((e) => Map<String, dynamic>.from(e))
-          .toList();
-      defMessage = true;
-      speech = "";
-      isReplying = false;
-      apiError = false;
-    });
+  void insertAnimatedMessage(Map<String, dynamic> msg) {
+    messages.add(msg);
+    _listKey.currentState?.insertItem(messages.length - 1);
   }
 
   Future<void> initSpeechToText() async {
     await speechToText.initialize();
-    setState(() {});
-  }
-
-  Future<void> initTextToSpeech() async {
-    await flutterTts.setSharedInstance(true);
     setState(() {});
   }
 
@@ -112,7 +112,6 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (result.finalResult && speech.isNotEmpty && !isReplying) {
-      // LOCK: block duplicates
       addUserMessage(speech);
       speech = '';
 
@@ -126,16 +125,19 @@ class _HomePageState extends State<HomePage> {
           apiError = true;
           isReplying = false;
         });
-        showErrorSnackBar("There seems to be a problem, please try again later.");
+        showErrorSnackBar(
+          "There seems to be a problem, please try again later.",
+        );
         return;
       }
       setState(() {
-        messages.add({
+        insertAnimatedMessage({
           "role": "model",
           "parts": [
             {"text": reply},
           ],
         });
+
         isReplying = false;
         apiError = false;
       });
@@ -146,30 +148,50 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> initTextToSpeech() async {
+    await flutterTts.setSharedInstance(true);
+    setState(() {});
+  }
+
   Future<void> systemSpeak(String content) async {
     await flutterTts.speak(content);
   }
 
-  @override
-  void dispose() {
-    speechToText.stop();
-    flutterTts.stop();
-    super.dispose();
-  }
-
   void addUserMessage(String text) {
+    if (defMessage) {
+      removeAllAnimated();
+      defMessage = false;
+    }
+
     setState(() {
-      if (defMessage) {
-        messages.clear(); // remove default messages if FIRST message
-        defMessage = false;
-      }
-      messages.add({
+      insertAnimatedMessage({
+        "role": "user",
         "parts": [
           {"text": text},
         ],
-        "role": "user",
       });
     });
+  }
+
+  void removeAllAnimated() {
+    final count = messages.length;
+
+    for (int i = count - 1; i >= 0; i--) {
+      final removedMessage = messages.removeAt(i);
+
+      _listKey.currentState?.removeItem(
+        i,
+        (context, animation) => FadeTransition(
+          opacity: animation,
+          child: ChatBubble(
+            message: removedMessage["parts"][0]["text"],
+            role: removedMessage["role"],
+            isDarkMode: widget.isDarkMode,
+          ),
+        ),
+        duration: Duration(milliseconds: 150),
+      );
+    }
   }
 
   void showErrorSnackBar(String message) {
@@ -182,6 +204,34 @@ class _HomePageState extends State<HomePage> {
         duration: Duration(seconds: 3),
       ),
     );
+  }
+
+  void resetApp() {
+    speechToText.stop();
+    flutterTts.stop();
+
+    removeAllAnimated();
+
+    setState(() {
+      messages.clear();
+      _listKey.currentState?.setState(() {});
+
+      Future.delayed(Duration(milliseconds: 300), () {
+        addDefaultMessagesAnimated();
+      });
+
+      defMessage = true;
+      speech = "";
+      isReplying = false;
+      apiError = false;
+    });
+  }
+
+  @override
+  void dispose() {
+    speechToText.stop();
+    flutterTts.stop();
+    super.dispose();
   }
 
   @override
@@ -244,18 +294,23 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             Expanded(
-              child: ListView.builder(
+              child: AnimatedList(
+                key: _listKey,
                 padding: EdgeInsets.only(top: 10),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  return ChatBubble(
-                    message: messages[index]["parts"][0]["text"],
-                    role: messages[index]["role"],
-                    isDarkMode: widget.isDarkMode,
+                initialItemCount: messages.length,
+                itemBuilder: (context, index, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: ChatBubble(
+                      message: messages[index]["parts"][0]["text"],
+                      role: messages[index]["role"],
+                      isDarkMode: widget.isDarkMode,
+                    ),
                   );
                 },
               ),
             ),
+
             if (isReplying)
               Container(
                 alignment: Alignment.centerLeft,
@@ -271,20 +326,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             SizedBox(height: 10),
-            /*SafeArea(
-              child: Row(
-                children: [
-                  Expanded(child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Enter your question here!",
-                      
-                    ),
-                  )),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.send)),
-                  
-                ],
-              ),
-            ),*/
             SafeArea(
               child: Align(
                 alignment: AlignmentGeometry.bottomRight,
