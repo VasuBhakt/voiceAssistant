@@ -277,103 +277,127 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            Stack(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxW = constraints.maxWidth;
+          final avatarSize = (maxW < 360) ? 90.0 : 120.0;
+          final horizontalPadding = (maxW < 360) ? 12.0 : 20.0;
+
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: Column(
               children: [
-                Center(
-                  child: Container(
-                    height: 120,
-                    width: 120,
-                    margin: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Pallete.assistantCircleColor,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: (widget.isDarkMode)
-                              ? Color.fromRGBO(152, 152, 152, 1)
-                              : Color.fromRGBO(0, 18, 101, 1),
-                          blurRadius: 12,
-                          offset: Offset(0, 6),
+                SizedBox(height: 10),
+
+                Stack(
+                  children: [
+                    Center(
+                      child: Container(
+                        height: avatarSize,
+                        width: avatarSize,
+                        margin: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Pallete.assistantCircleColor,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: (widget.isDarkMode)
+                                  ? Color.fromRGBO(152, 152, 152, 1)
+                                  : Color.fromRGBO(0, 18, 101, 1),
+                              blurRadius: 12,
+                              offset: Offset(0, 6),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: avatarSize + 30,
+                      child: Center(
+                        child: Container(
+                          height: avatarSize + 20,
+                          width: avatarSize + 20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/alice.png'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                Expanded(
+                  child: AnimatedList(
+                    key: _listKey,
+                    controller: scrollController,
+                    padding: EdgeInsets.only(top: 10),
+                    initialItemCount: messages.length,
+                    itemBuilder: (context, index, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ChatBubble(
+                          message: messages[index]["parts"][0]["text"],
+                          role: messages[index]["role"],
+                          isDarkMode: widget.isDarkMode,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                if (isReplying)
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Text(
+                      "Replying...",
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w500,
+                        fontSize: (maxW < 360) ? 16 : 20,
+                        color: (!widget.isDarkMode)
+                            ? Colors.black
+                            : Colors.white,
+                      ),
+                    ),
+                  ),
+
+                SizedBox(height: 10),
+
+                SafeArea(
+                  child: Align(
+                    alignment: AlignmentGeometry.bottomRight,
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        if (await speechToText.hasPermission &&
+                            speechToText.isNotListening) {
+                          await startListening();
+                        } else if (speechToText.isListening) {
+                          await stopListening();
+                        } else {
+                          initSpeechToText();
+                        }
+                      },
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: Icon(
+                        (speechToText.isNotListening) ? Icons.mic : Icons.stop,
+                        size: (maxW < 360) ? 20 : 28,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage('assets/images/alice.png'),
-                    ),
-                  ),
-                ),
+
+                SizedBox(height: 20),
               ],
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: AnimatedList(
-                key: _listKey,
-                controller: scrollController,
-                padding: EdgeInsets.only(top: 10),
-                initialItemCount: messages.length,
-                itemBuilder: (context, index, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: ChatBubble(
-                      message: messages[index]["parts"][0]["text"],
-                      role: messages[index]["role"],
-                      isDarkMode: widget.isDarkMode,
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            if (isReplying)
-              Container(
-                alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(bottom: 5),
-                child: Text(
-                  "Replying...",
-                  style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 20,
-                    color: (!widget.isDarkMode) ? Colors.black : Colors.white,
-                  ),
-                ),
-              ),
-            SizedBox(height: 10),
-            SafeArea(
-              child: Align(
-                alignment: AlignmentGeometry.bottomRight,
-                child: FloatingActionButton(
-                  onPressed: () async {
-                    if (await speechToText.hasPermission &&
-                        speechToText.isNotListening) {
-                      await startListening();
-                    } else if (speechToText.isListening) {
-                      await stopListening();
-                    } else {
-                      initSpeechToText();
-                    }
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(
-                    (speechToText.isNotListening) ? Icons.mic : Icons.stop,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
