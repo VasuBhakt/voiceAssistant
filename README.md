@@ -58,7 +58,7 @@ flutter pub get
 ## 🤝 Contributing
 
 Contributions welcome! Open issues or submit pull requests to improve the app. <br>
-It would be really helpful if someone could do the testing for iOS platform since it couldn't be done due to device constraints. <br>
+The app needs some added config for iOS, mostly for <a href="https://pub.dev/packages/flutter_tts">flutter_tts</a> package. It would be really helpful if someone could implement those and do the testing for iOS platform since it couldn't be done due to device constraints. <br>
 If any bugs are found, feel free to open issues or submit pull requests! Thanks in advance! <br>
 
 ## 📄 License
