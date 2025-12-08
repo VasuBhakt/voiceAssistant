@@ -1,6 +1,6 @@
 # 🎙️ voiceAssistant
 
-**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5. Ask it about Sports, History, Science, or any topic, and it responds via text and speech!
+**voiceAssistant** is a Flutter-based AI-powered voice assistant, powered by Gemini 2.5 Flash. Ask it about Sports, History, Science, or any topic, and it responds via text and speech! Supports full multi-turn conversations, preserving context across messages for natural, human-like interactions.
 
 ## 🌟 Features
 - 🎤 Real-time Speech-to-Text recognition.
@@ -8,6 +8,7 @@
 - 💬 Animated, scrollable chat interface.
 - 🌗 Light & Dark mode support.
 - 🔄 Quick reset functionality.
+- 🤖 Supports multi-turn, context-aware conversations
 
 ## 🚀 Getting Started
 
@@ -46,20 +47,8 @@ flutter pub get
 ## ⚠️ Limitations
 
 1. **Gemini API**
-   - Responses are generated via the Gemini 2.5 API, which has memory and context limitations. This might result in inaccurate information, especially for more recent information.
+   - Responses are generated via the Gemini 2.5 API Flash, which has memory and context limitations. This might result in inaccurate information, especially for more recent information.
    - Occasionally, the API may fail due to network issues or rate limits — the app handles this with an ```API_ERROR``` fallback.
-
-2. **Voice Recognition (```speech_to_text```)**
-   - Accuracy depends on device microphone quality and ambient noise.
-   - Some devices may not support continuous listening or long recordings.
-   - Limited support for non-English languages unless configured on the device.
-
-3. **Text-to-Speech (```flutter_tts```)**
-   - Voice quality and speed vary by device.
-   - Certain voices or languages may not be available on all platforms.
-
-4. **Platform Differences**
-   - Minor UI differences may appear on small devices or iOS/Android due to system-level font scaling, safe area insets, and TTS/voice recognition behavior.
 
 ## 🤝 Contributing
 
@@ -70,6 +59,11 @@ If any bugs are found, feel free to open issues or submit pull requests! Thanks 
 ## 📄 License
 
 This project is licensed under the [MIT License](./LICENSE.txt).
+
+## 🤓 Fun Fact
+
+ - Such a dull name because I named it in a rush, plan to change it later!
+ - This project is for educational purposes, therefore I cannot afford a paid model. Requesting Google for a better API. Please.
 
 
 
