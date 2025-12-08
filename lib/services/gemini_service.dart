@@ -8,11 +8,11 @@ class GeminiService {
     try {
       final List<Map<String, dynamic>> finalMessages = [
         {
-          "role": "system",
+          "role": "user",
           "parts": [
             {
               "text":
-                  "Respond concisely. Use plain text. No markdown, no bullet points unless asked. Keep answers short and clear.",
+                  "Respond concisely. Use plain text. No markdown, no bullet points unless asked. Keep answers short and clear, preferably in the range 150 to 400 words, depending on the question asked and how much articulated the response needs to be.",
             },
           ],
         },
