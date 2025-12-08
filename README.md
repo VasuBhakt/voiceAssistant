@@ -10,6 +10,10 @@
 - 🔄 Quick reset functionality.
 - 🤖 Supports multi-turn, context-aware conversations
 
+## 📸 Screenshots
+- ![Screenshot](pics/homescreen.jpeg)
+- ![Screenshot](githubPics/prompt(indarkmode).jpeg)
+
 ## 🚀 Getting Started
 
 ### Prerequisites
