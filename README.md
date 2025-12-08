@@ -11,8 +11,8 @@
 - 🤖 Supports multi-turn, context-aware conversations
 
 ## 📸 Screenshots
-- ![Screenshot](pics/homescreen.jpeg)
-- ![Screenshot](githubPics/prompt(indarkmode).jpeg)
+- <a href="https://github.com/VasuBhakt/voiceAssistant/blob/main/pics/homescreen.jpeg"> Home Screen</a>
+- <a href="https://github.com/VasuBhakt/voiceAssistant/blob/main/pics/prompt_indarkmode.jpeg"> Prompt and Dark Mode </a>
 
 ## 🚀 Getting Started
 
