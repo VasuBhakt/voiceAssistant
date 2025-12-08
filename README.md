@@ -13,6 +13,7 @@
 ## 📸 Screenshots
 - <a href="https://github.com/VasuBhakt/voiceAssistant/blob/main/pics/homescreen.jpeg"> Home Screen</a>
 - <a href="https://github.com/VasuBhakt/voiceAssistant/blob/main/pics/prompt_indarkmode.jpeg"> Prompt and Dark Mode </a>
+- <a href="https://github.com/VasuBhakt/voiceAssistant/blob/main/pics/video.mp4"> Video </a>
 
 ## 🚀 Getting Started
 
