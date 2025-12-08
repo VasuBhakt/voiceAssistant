@@ -12,7 +12,7 @@ class GeminiService {
           "parts": [
             {
               "text":
-                  "Respond concisely. Use plain text. No markdown, no bullet points unless asked. Keep answers short and clear, preferably in the range 150 to 400 words, depending on the question asked and how much articulated the response needs to be.",
+                  "Respond concisely. Use plain text. No markdown, no bullet points unless asked. Keep answers short and clear, preferably in the range 50 to 400 words, depending on the question asked and how much articulated the response needs to be.",
             },
           ],
         },
